@@ -1,0 +1,50 @@
+@Api_HostAddress = https://localhost:8000
+
+### 1. Utan token, ska ge 401 Unauthorized
+GET {{Api_HostAddress}}/api/books
+
+### 2. Registrera
+POST {{Api_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{ "username": "marko", "password": "hemligt123" }
+
+### 3. Logga in
+# @name login
+POST {{Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{ "username": "marko", "password": "hemligt123" }
+
+### 4. Med token, ska ge 200 OK
+GET {{Api_HostAddress}}/api/books
+Authorization: Bearer {{login.response.body.$.token}}
+
+### 5. Fel lösenord, ska ge 401
+POST {{Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{ "username": "marko", "password": "fel" }
+
+
+### 6. Mina citat, ska visa de 5 startcitaten
+GET {{Api_HostAddress}}/api/quotes
+Authorization: Bearer {{login.response.body.$.token}}
+
+### 7. Lägg till citat
+POST {{Api_HostAddress}}/api/quotes
+Authorization: Bearer {{login.response.body.$.token}}
+Content-Type: application/json
+
+{ "text": "Det är bara kod.", "author": "Marko" }
+
+### 8. Ändra citat 1
+PUT {{Api_HostAddress}}/api/quotes/1
+Authorization: Bearer {{login.response.body.$.token}}
+Content-Type: application/json
+
+{ "text": "Talk is cheap. Show me the code!", "author": "Linus Torvalds" }
+
+### 9. Radera citat 1
+DELETE {{Api_HostAddress}}/api/quotes/1
+Authorization: Bearer {{login.response.body.$.token}}
