@@ -1,1 +1,76 @@
-<p>quotes works!</p>
+<h1 class="h3 mb-4"><i class="fa-solid fa-quote-left me-2"></i>Mina citat</h1>
+
+<!-- Lägg till -->
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <h2 class="h6 mb-3"><i class="fa-solid fa-plus me-1"></i>Lägg till citat</h2>
+    <form #addForm="ngForm" (ngSubmit)="add()" class="row g-2">
+      <div class="col-12 col-md-7">
+        <input name="text" class="form-control" placeholder="Citat"
+               [(ngModel)]="newQuote.text" required>
+      </div>
+      <div class="col-12 col-md-3">
+        <input name="author" class="form-control" placeholder="Författare"
+               [(ngModel)]="newQuote.author" required>
+      </div>
+      <div class="col-12 col-md-2 d-grid">
+        <button type="submit" class="btn btn-primary" [disabled]="addForm.invalid">
+          <i class="fa-solid fa-plus me-1"></i>Lägg till
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Listan -->
+@for (quote of quotes(); track quote.id) {
+  <div class="card shadow-sm mb-3">
+    <div class="card-body">
+      @if (editingId() === quote.id) {
+        <!-- Redigeringsläge -->
+        <form #editForm="ngForm" (ngSubmit)="saveEdit(quote.id)" class="row g-2">
+          <div class="col-12 col-md-7">
+            <input name="editText" class="form-control"
+                   [(ngModel)]="editQuote.text" required>
+          </div>
+          <div class="col-12 col-md-3">
+            <input name="editAuthor" class="form-control"
+                   [(ngModel)]="editQuote.author" required>
+          </div>
+          <div class="col-12 col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-success flex-fill" [disabled]="editForm.invalid"
+                    title="Spara" aria-label="Spara">
+              <i class="fa-solid fa-check"></i>
+            </button>
+            <button type="button" class="btn btn-outline-secondary flex-fill" (click)="cancelEdit()"
+                    title="Avbryt" aria-label="Avbryt">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </form>
+      } @else {
+        <!-- Visningsläge -->
+        <div class="d-flex flex-column flex-sm-row justify-content-between gap-3">
+          <blockquote class="blockquote mb-0">
+            <p class="mb-2">”{{ quote.text }}”</p>
+            <footer class="blockquote-footer mb-0">{{ quote.author }}</footer>
+          </blockquote>
+          <div class="d-flex gap-2 align-self-start">
+            <button class="btn btn-outline-primary btn-sm" (click)="startEdit(quote)"
+                    title="Redigera" aria-label="Redigera">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+            <button class="btn btn-outline-danger btn-sm" (click)="delete(quote)"
+                    title="Radera" aria-label="Radera">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+} @empty {
+  <div class="alert alert-info">
+    <i class="fa-solid fa-circle-info me-2"></i>Inga citat än.
+  </div>
+}
