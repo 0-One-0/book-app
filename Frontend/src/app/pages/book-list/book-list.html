@@ -1,1 +1,42 @@
-<p>book-list works!</p>
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+  <h1 class="h3 mb-0"><i class="fa-solid fa-book me-2"></i>Böcker</h1>
+  <a routerLink="/books/new" class="btn btn-primary">
+    <i class="fa-solid fa-plus me-1"></i>Lägg till ny bok
+  </a>
+</div>
+
+@if (loading()) {
+  <div class="text-center py-5">
+    <div class="spinner-border" role="status"></div>
+  </div>
+} @else if (books().length === 0) {
+  <div class="alert alert-info">
+    <i class="fa-solid fa-circle-info me-2"></i>Inga böcker än. Lägg till din första!
+  </div>
+} @else {
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3">
+    @for (book of books(); track book.id) {
+      <div class="col">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h2 class="h5 card-title">{{ book.title }}</h2>
+            <p class="card-text mb-1">
+              <i class="fa-solid fa-user-pen me-2 text-secondary"></i>{{ book.author }}
+            </p>
+            <p class="card-text text-secondary small">
+              <i class="fa-solid fa-calendar me-2"></i>{{ book.publishedDate }}
+            </p>
+          </div>
+          <div class="card-footer bg-transparent d-flex gap-2">
+            <a [routerLink]="['/books', book.id, 'edit']" class="btn btn-outline-primary btn-sm flex-fill">
+              <i class="fa-solid fa-pen me-1"></i>Redigera
+            </a>
+            <button (click)="delete(book)" class="btn btn-outline-danger btn-sm flex-fill">
+              <i class="fa-solid fa-trash me-1"></i>Radera
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+}
