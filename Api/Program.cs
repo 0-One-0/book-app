@@ -10,8 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("Default")));
 
+var allowedOrigins = builder.Configuration.GetSection("Cors:Origins").Get<string[]>() ?? [];
+
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
-    policy.WithOrigins("http://localhost:4200")
+    policy.WithOrigins(allowedOrigins)
           .AllowAnyHeader()
           .AllowAnyMethod()));
 
@@ -34,7 +36,15 @@ builder.Services.AddAuthorization();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
-app.MapOpenApi();
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}
 
 app.UseCors();
 app.UseAuthentication(); // vem är du? (läser token)

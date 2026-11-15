@@ -24,7 +24,19 @@
         </li>
       </ul>
 
-      <ul class="navbar-nav">
+      <ul class="navbar-nav flex-row align-items-center gap-2">
+        <li class="nav-item">
+          <button class="btn btn-outline-secondary btn-sm my-1" (click)="toggleTheme()"
+                  [title]="theme() === 'dark' ? 'Byt till ljust läge' : 'Byt till mörkt läge'"
+                  [attr.aria-label]="theme() === 'dark' ? 'Byt till ljust läge' : 'Byt till mörkt läge'">
+            @if (theme() === 'dark') {
+              <i class="fa-solid fa-sun"></i>
+            } @else {
+              <i class="fa-solid fa-moon"></i>
+            }
+          </button>
+        </li>
+
         @if (auth.isLoggedIn()) {
           <li class="nav-item">
             <button class="btn btn-outline-secondary btn-sm my-1" (click)="logout()">
