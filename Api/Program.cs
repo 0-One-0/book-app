@@ -50,6 +50,8 @@ app.UseCors();
 app.UseAuthentication(); // vem är du? (läser token)
 app.UseAuthorization();  // får du vara här?
 
+app.MapGet("/", () => "BookApp API körs ✅");
+
 app.MapAuthEndpoints();
 app.MapBookEndpoints();
 app.MapQuoteEndpoints();
